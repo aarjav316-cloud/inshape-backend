@@ -26,8 +26,16 @@ export const createAdmin = async (req, res) => {
       password,
     });
 
+    // Generate JWT token (14 days)
+    const token = jwt.sign(
+      { id: admin._id, email: admin.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "14d" },
+    );
+
     res.status(201).json({
       message: "Admin created successfully",
+      token,
       admin: {
         id: admin._id,
         username: admin.username,
@@ -67,11 +75,11 @@ export const loginAdmin = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT token
+    // Generate JWT token (14 days)
     const token = jwt.sign(
       { id: admin._id, email: admin.email },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "14d" },
     );
 
     res.status(200).json({
